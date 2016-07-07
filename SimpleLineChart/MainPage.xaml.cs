@@ -25,6 +25,13 @@ namespace SimpleLineChart
         public MainPage()
         {
             this.InitializeComponent();
+            Values = new List<double>()
+            {
+                12, 15, 22, 26, 30, 32, 29, 25, 31, 35, 15, 22, 26, 30, 32, 29, 25, 31, 35, 15, 22, 26, 30, 32, 29, 25, 31, 35
+            };
         }
+
+        public IList<double> Values { get; }
+        public double MaxValue => Values.Max() + 20;
     }
 }
