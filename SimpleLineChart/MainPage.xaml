@@ -9,16 +9,19 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <controls:BezierCurveChartControl Data="{x:Bind Values}"
+                                          Stroke="Tomato"
+                                          StrokeThickness="3"
                                           MaxValueYAxis="{x:Bind MaxValue}"
                                           DrawValuePoints="True"
                                           PathHeight="300"
                                           PathWidth="1200">
             <controls:BezierCurveChartControl.ValuePointDecorator>
                 <DataTemplate>
-                    <Polygon Fill="GreenYellow"
-                             Stroke="Green"
+                    <Ellipse Fill="DodgerBlue"
+                             Stroke="DeepSkyBlue"
                              StrokeThickness="2"
-                             Points="-5,5 0,-5 5,5"/>
+                             Width="9"
+                             Height="9"/>
                 </DataTemplate>
             </controls:BezierCurveChartControl.ValuePointDecorator>
         </controls:BezierCurveChartControl>

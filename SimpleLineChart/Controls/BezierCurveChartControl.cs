@@ -34,8 +34,8 @@ namespace SimpleLineChart.Controls
         public static readonly DependencyProperty PathHeightProperty = DependencyProperty.Register(
             "PathHeight", typeof(int), typeof(BezierCurveChartControl), new PropertyMetadata(default(int)));
 
-        public static readonly DependencyProperty DesiredItemWidthProperty = DependencyProperty.Register(
-            "DesiredItemWidth", typeof(int), typeof(BezierCurveChartControl), new PropertyMetadata(default(int)));
+        //public static readonly DependencyProperty DesiredItemWidthProperty = DependencyProperty.Register(
+        //    "DesiredItemWidth", typeof(int), typeof(BezierCurveChartControl), new PropertyMetadata(default(int)));
 
         public static readonly DependencyProperty MaxValueYAxisProperty = DependencyProperty.Register(
             "MaxValueYAxis", typeof(double), typeof(BezierCurveChartControl), new PropertyMetadata(default(double)));
@@ -48,6 +48,12 @@ namespace SimpleLineChart.Controls
 
         public static readonly DependencyProperty ValuePointDecoratorProperty = DependencyProperty.Register(
             "ValuePointDecorator", typeof(DataTemplate), typeof(BezierCurveChartControl), new PropertyMetadata(default(DataTemplate)));
+
+        public static readonly DependencyProperty StrokeProperty = DependencyProperty.Register(
+            "Stroke", typeof(Brush), typeof(BezierCurveChartControl), new PropertyMetadata(default(Brush)));
+
+        public static readonly DependencyProperty StrokeThicknessProperty = DependencyProperty.Register(
+            "StrokeThickness", typeof(double), typeof(BezierCurveChartControl), new PropertyMetadata(default(double)));
 
 
         public BezierCurveChartControl()
@@ -86,11 +92,11 @@ namespace SimpleLineChart.Controls
             set { SetValue(PathHeightProperty, value); }
         }
 
-        public int DesiredItemWidth
-        {
-            get { return (int)GetValue(DesiredItemWidthProperty); }
-            set { SetValue(DesiredItemWidthProperty, value); }
-        }
+        //public int DesiredItemWidth
+        //{
+        //    get { return (int)GetValue(DesiredItemWidthProperty); }
+        //    set { SetValue(DesiredItemWidthProperty, value); }
+        //}
 
         public double MaxValueYAxis
         {
@@ -115,7 +121,19 @@ namespace SimpleLineChart.Controls
             get { return (DataTemplate)GetValue(ValuePointDecoratorProperty); }
             set { SetValue(ValuePointDecoratorProperty, value); }
         }
-        
+
+        public Brush Stroke
+        {
+            get { return (Brush)GetValue(StrokeProperty); }
+            set { SetValue(StrokeProperty, value); }
+        }
+
+        public double StrokeThickness
+        {
+            get { return (double)GetValue(StrokeThicknessProperty); }
+            set { SetValue(StrokeThicknessProperty, value); }
+        }
+
 
         private void DrawChart()
         {
@@ -234,10 +252,15 @@ namespace SimpleLineChart.Controls
                 Figures = new PathFigureCollection { startFigure }
             };
 
+            var pathStroke = Stroke ?? new SolidColorBrush(Colors.Black);
+            var pathStrokeThickness = double.IsNaN(StrokeThickness) || StrokeThickness == 0
+                ? 1.0
+                : StrokeThickness;
+
             var path = new Path()
             {
-                Stroke = new SolidColorBrush(Colors.Black),
-                StrokeThickness = 1,
+                Stroke = pathStroke,
+                StrokeThickness = pathStrokeThickness,
                 Data = pathGeometry
             };
             return path;
