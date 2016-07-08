@@ -44,7 +44,7 @@ namespace SimpleLineChart.Controls
             "DrawValuePoints", typeof(bool), typeof(BezierCurveChartControl), new PropertyMetadata(default(bool)));
 
         public static readonly DependencyProperty DataProperty = DependencyProperty.Register(
-            "Data", typeof(ICollection<double>), typeof(BezierCurveChartControl), new PropertyMetadata(default(ICollection<double>)));
+            "Data", typeof(ICollection<double>), typeof(BezierCurveChartControl), new PropertyMetadata(default(ICollection<double>), OnDataChanged));
 
         public static readonly DependencyProperty ValuePointDecoratorProperty = DependencyProperty.Register(
             "ValuePointDecorator", typeof(DataTemplate), typeof(BezierCurveChartControl), new PropertyMetadata(default(DataTemplate)));
@@ -71,8 +71,6 @@ namespace SimpleLineChart.Controls
             _viewboxPart.MaxWidth = PathWidth;
             _canvasPart.Height = PathHeight;
             _viewboxPart.MaxHeight = PathHeight;
-
-            _normalizedItemWidth = (double) PathWidth/Data.Count;
 
             DrawChart();
 
@@ -135,8 +133,17 @@ namespace SimpleLineChart.Controls
         }
 
 
-        private void DrawChart()
+        public void DrawChart()
         {
+            if (_canvasPart == null) return;
+
+            _normalizedItemWidth = (double)PathWidth / Data.Count;
+            if (MaxValueYAxis == 0)
+            {
+                if (!Data.Any()) MaxValueYAxis = 0;
+                else MaxValueYAxis = Data.Max() + 20;
+            }
+
             SetChartStartPoint();
             CreateChartSegments();
             if (DrawValuePoints) CreatePointsGeometries();
@@ -156,9 +163,7 @@ namespace SimpleLineChart.Controls
         private void SetChartStartPoint()
         {
             var firstValue = Data.FirstOrDefault();
-            var x = _normalizedItemWidth / 2;
-            var y = PathHeight - (firstValue * PathHeight / MaxValueYAxis);
-            _chartStartPoint = new Point(x, y);
+            _chartStartPoint = GetNormalizedPoint(0, firstValue);
         }
 
         private void CreateChartSegments()
@@ -264,6 +269,13 @@ namespace SimpleLineChart.Controls
                 Data = pathGeometry
             };
             return path;
+        }
+
+
+        private static void OnDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var chart = d as BezierCurveChartControl;
+            chart?.DrawChart();
         }
     }
 }
